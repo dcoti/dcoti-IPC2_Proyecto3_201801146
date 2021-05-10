@@ -1,0 +1,300 @@
+{% load static %}
+
+<!-- saved from url=(0062)https://www.w3schools.com/w3css/tryw3css_templates_webpage.htm -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>IPC2-Proyecto3</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{% static '/w3.css' %}">
+<link rel="stylesheet" href="{% static '/w3-theme-black.css' %}">
+<link rel="stylesheet" href="{% static '/css.css' %}">
+<link rel="stylesheet" href="{% static '/font-awesome.css' %}">
+<style>
+  #con-css{
+    resize:none;
+}
+   #con-csss{
+    resize:none;
+}
+html,body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+.w3-row-padding img {margin-bottom: 12px}
+.w3-sidebar {width: 120px;background: #222;}
+#main {margin-left: 120px}
+</style>
+</head><body class="w3-black">
+
+<!-- As a link -->
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid">
+    <h4 class="navbar-brand">Daniel Enrique Coti Peñate Carnet: 201801146</h4>
+
+  </div>
+</nav>
+<!-- Icon Bar (Sidebar - hidden on small screens) -->
+<footer class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center"   id="about">
+  <!-- Avatar image in top left corner -->
+  <img src="./static/ingenieria.png" style="width:100%">
+  <div class="w3-bar-item w3-button w3-padding-large w3-black">
+   <input type= "file" id="fileChooser" style="display: none;"/>
+      <button  class="w3-button w3-block w3-section w3-dark-grey w3-ripple w3-padding" onclick="abrirArchivo(fileChooser)">ARCHIVO</button>
+      <button  id="Informacion" class="w3-button w3-block w3-section w3-dark-grey w3-ripple w3-padding" type="submit">INFORMACION</button>
+      <button  id="Usuarios" class="w3-button w3-block w3-section w3-dark-grey w3-ripple w3-padding" type="submit">USUARIO</button>
+      <input type="datetime" id="dateuser" placeholder="dd/mm/yyyy">
+      <button  id="GenUser" class="w3-button w3-block w3-section w3-dark-grey w3-ripple w3-padding" type="submit">GENERAR USUARIO</button>
+      <button  id="Errores" class="w3-button w3-block w3-section w3-dark-grey w3-ripple w3-padding" type="submit">ERRORES</button>
+      <input type="datetime" id="dateerror" placeholder="dd/mm/yyyy">
+      <button  id="GenError" class="w3-button w3-block w3-section w3-dark-grey w3-ripple w3-padding" type="submit">GENERAR ERRORES</button>
+
+      <!-- <button  id="Programador" class="w3-button w3-block w3-section w3-dark-grey w3-ripple w3-padding" type="submit">PROGRAMADOR</button> -->
+      <button  id="Ayuda" class="w3-button w3-block w3-section w3-dark-grey w3-ripple w3-padding" type="submit">AYUDA</button>
+  </div>
+</footer>
+
+<div id="grafico"></div>
+
+<!-- Page Content -->
+<div class="w3-padding-large" id="main">
+<!-- Header/Home -->
+  <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+    <h1 class="w3-jumbo"><span class="w3-hide-small">Proyecto</span> 3</h1>
+    <p></p>
+    <textarea placeholder="Entrada"  id="con-csss" name="comentarios" rows="20" cols="80"></textarea>
+    <textarea placeholder="Salida"  id="con-css" name="comentarios" rows="20" cols="80"></textarea>
+    <p>
+      <button id="Enviar" class="w3-button w3-block w3-dark-grey" type="submit">Enviar </button>
+      <p>
+    <p>
+      <button id="resetear" class="w3-button w3-block w3-dark-grey" type="submit">Reset</button>
+      <p>
+  </header>
+
+<!-- END PAGE CONTENT -->
+</div>
+<!-- AREA DE SCRIPTS (PARA QUE NO SE CRASHEE)-->
+<!-- GENERAR GRAFICAS -->
+<script>
+    var btn_error = document.getElementById('GenUser');
+
+        btn_error.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch("http://localhost:5000/graficauser", {
+          method: "GET",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.text();
+            }
+          })
+          .then((res_txt) => {
+            Plotly.newPlot("grafico",res_txt);
+          });
+      });
+</script>
+
+<script>
+    var btn_errorr = document.getElementById('GenError');
+
+        btn_errorr.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch("http://localhost:5000/graficaerror", {
+          method: "GET",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.text();
+            }
+          })
+          .then((res_txt) => {
+            Plotly.newPlot("grafico",res_txt);
+          });
+      });
+</script>
+<!-- PARA ABRIR DOCUMENTACION OFICIAL -->
+<script>
+    var reset = document.getElementById('Ayuda');
+
+    reset.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch("http://localhost:5000/documentacion", {
+          method: "GET",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.text();
+            }
+          })
+          .then((res_txt) => {
+            console.log = res.text();
+
+          });
+      });
+</script>
+<!-- PARA ENVIAR FECHA DE ERRORES -->
+<script>
+    var error = document.getElementById('Errores');
+
+    error.addEventListener("click", (e) => {
+    var user = document.getElementById('dateerror');
+    e.preventDefault();
+        fetch("http://localhost:5000/peticionerror", {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          body: user.value,
+        }).then((res) => {
+          if (res.ok) {
+            console.log = "intento de grafica hecho";
+          }
+        });
+      });
+</script>
+<!-- PARA ENVIAR FECHA DE USUARIO -->
+<script>
+    var usuario = document.getElementById('Usuarios');
+
+    usuario.addEventListener("click", (e) => {
+    var user = document.getElementById('dateuser');
+    e.preventDefault();
+        fetch("http://localhost:5000/peticionuser", {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          body: user.value,
+        }).then((res) => {
+          if (res.ok) {
+            console.log = "intento de grafica hecho";
+          }
+        });
+      });
+</script>
+<!-- PARA RESETEAR EL SERVIDOR -->
+<script>
+    var reset = document.getElementById('resetear');
+    var datafil = document.getElementById('con-csss');
+    var salida = document.getElementById('con-css');
+
+    reset.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch("http://localhost:5000/borrar", {
+          method: "GET",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.text();
+            }
+          })
+          .then((res_txt) => {
+            salida.innerText = "";
+            datafil.innerText = "";
+          });
+      });
+</script>
+
+<script>
+    var info = document.getElementById('Informacion');
+    var user = document.getElementById('Usuarios');
+    var error = document.getElementById('Errores');
+    var programador = document.getElementById('Programador');
+    var ayuda = document.getElementById('Ayuda');
+    var salida = document.getElementById('con-css');
+
+    info.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch("http://localhost:5000/llamarxml", {
+          method: "GET",
+          headers: {
+            "Content-Type": "text/xml",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.text();
+            }
+          })
+          .then((res_txt) => {
+            salida.innerText = res_txt;
+          });
+      });
+</script>
+
+<script>
+  var fileChooser = document.getElementById('fileChooser');
+  var data = document.getElementById('Enviar');
+  var datafil = document.getElementById('con-csss');
+
+  if (fileChooser)
+    fileChooser.addEventListener("change", subirArchivo)
+
+  function subirArchivo()
+  {
+    let reader = new FileReader();
+
+    reader.onload = function ()
+    {
+      let datos = {
+        data: reader.result.replace('data:', '')
+          .replace(/^.+,/, '')
+      }
+      fetch('http://localhost:5000/abrirArchivo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(datos)
+      }).then(res =>
+      {
+        location.reload();
+      });
+    }
+
+    reader.onerror = function (error)
+    {
+      console.log('Error: ', error);
+    };
+
+    reader.readAsDataURL(fileChooser.files[0]);
+  }
+
+  function abrirArchivo(input)
+  {
+    input.click();
+  }
+
+  data.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch("http://localhost:5000/abrirArchivo", {
+          method: "GET",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.text();
+            }
+          })
+          .then((res_txt) => {
+            datafil.innerText = res_txt;
+          });
+      });
+
+</script>
+
+
+
+<!-- END MAIN -->
+</div>
+</body></html>

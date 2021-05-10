@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Hola mundo</h1>
+    <form id="post-form">
+      <input type="text" name="api-info" id="api-info" />
+      <input type="submit" value="Enviar datos" />
+    </form>
+    <button id="get-button">Recibir información</button>
+    <div id="messages"></div>
+    <script>
+      let post_form = document.getElementById("post-form");
+      let get_button = document.getElementById("get-button");
+      let messages = document.getElementById("messages");
+
+      post_form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        fetch("http://localhost:5000/events/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          body: post_form.elements["api-info"].value,
+        }).then((res) => {
+          if (res.ok) {
+            messages.innerText = "OK";
+          }
+        });
+      });
+
+      get_button.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch("http://localhost:5000/events/", {
+          method: "GET",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              return res.text();
+            }
+          })
+          .then((res_txt) => {
+            messages.innerText = res_txt;
+          });
+      });
+    </script>
+  </body>
+</html>
